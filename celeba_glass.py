@@ -11,10 +11,9 @@ from __future__ import print_function
 
 import shutil
 import os
-
-output_path = "/home/bingwen/Dataset/CelebA/"
-image_path = "/home/bingwen/Dataset/CelebA/img_align_celeba"
-CelebA_Attr_file = "/home/bingwen/Dataset/CelebA/list_attr_celeba.txt"
+output_path = "/content/output/CelebA/"
+image_path = "/content/img_align_celeba"
+CelebA_Attr_file = "/content/gdrive/MyDrive/CelebA/Anno/list_attr_celeba.txt"
 Attr_type = 16  # Eyeglasses
 
 
