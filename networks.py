@@ -121,10 +121,10 @@ class AdaINGen(nn.Module):
         mlp_dim = params['mlp_dim']
         self.a = params['new_size']/224
         style_name = params['style_name']
-        mask_border_up = mask_size['mask_size_y1']
-        mask_border_bottom = mask_size['mask_size_y2']
-        mask_border_left = mask_size['mask_size_x1']
-        mask_border_right = mask_size['mask_size_x2']
+        self.mask_border_up = mask_size['mask_size_y1']
+        self.mask_border_bottom = mask_size['mask_size_y2']
+        self.mask_border_left = mask_size['mask_size_x1']
+        self.mask_border_right = mask_size['mask_size_x2']
         
         # style encoder
         #self.enc_style = StyleEncoder(4, input_dim, dim, style_dim, norm='none', activ=activ, pad_type=pad_type)
@@ -164,7 +164,7 @@ class AdaINGen(nn.Module):
               style_fake = self.enc_style(images)
         #style_fake = self.enc_style(images)
         #[:,:, round(self.a * 92):round(self.a * 144), round(self.a * 48):round(self.a * 172)] #celebA
-        images_block[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a * mask_border_left):round(self.a * mask_border_right)] = 0 #fine_tune
+        images_block[:,:, round(self.a * self.mask_border_up):round(self.a * self.mask_border_bottom), round(self.a * self.mask_border_left):round(self.a * self.mask_border_right)] = 0 #fine_tune
 
         content = self.enc_content(images_block)
 
@@ -175,7 +175,7 @@ class AdaINGen(nn.Module):
         adain_params = self.mlp(style)
         self.assign_adain_params(adain_params, self.dec)
         images_block = images.clone()
-        images_block[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a * mask_border_left):round(self.a * mask_border_right)] = 0
+        images_block[:,:, round(self.a * self.mask_border_up):round(self.a * self.mask_border_bottom), round(self.a * self.mask_border_left):round(self.a * self.mask_border_right)] = 0
 
         images = self.dec(content , images_block)
 
