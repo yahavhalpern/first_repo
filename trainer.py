@@ -101,8 +101,8 @@ class ERGAN_Trainer(nn.Module):
         #mask = torch.ones(x_a.shape).cuda()
         block_a = x_a.clone()
         block_b = x_b.clone()
-        block_a[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)] = 0
-        block_b[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)] = 0
+        block_a[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
+        block_b[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
 
         # encode
         c_a, s_a_prime = self.gen_a.encode(x_a)
@@ -121,8 +121,8 @@ class ERGAN_Trainer(nn.Module):
 
         block_ba_real = x_ba_real.clone()
         block_ab_real = x_ab_real.clone()
-        block_ba_real[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)] = 0
-        block_ab_real[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)] = 0
+        block_ba_real[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
+        block_ab_real[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
         # encode again
         # c_b_recon, s_a_recon = self.gen_a.encode(x_ba_randn)
         # c_a_recon, s_b_recon = self.gen_b.encode(x_ab_randn)
@@ -137,11 +137,11 @@ class ERGAN_Trainer(nn.Module):
         self.loss_gen_recon_res_a = self.recon_criterion(block_ab_real, block_a)
         self.loss_gen_recon_res_b = self.recon_criterion(block_ba_real, block_b)
         self.loss_gen_recon_x_a_re = self.recon_criterion(
-            x_a_recon[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)],
-             x_a[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)]) 
+            x_a_recon[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)],
+             x_a[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)]) 
         self.loss_gen_recon_x_b_re = self.recon_criterion(
-             x_b_recon[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)],
-             x_b[:,:, round(self.a * 92):round(self.a * 144), round(self.a *48):round(self.a * 172)]) # both celebA and MeGlass: [92:144, 48:172]
+             x_b_recon[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)],
+             x_b[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)]) # both celebA and MeGlass: [92:144, 48:172]
         self.loss_gen_recon_x_a = self.recon_criterion(x_a_recon, x_a)
         self.loss_gen_recon_x_b = self.recon_criterion(x_b_recon, x_b)
 
