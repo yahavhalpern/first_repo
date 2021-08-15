@@ -33,8 +33,8 @@ class ERGAN_Trainer(nn.Module):
         print(lr_D, lr_G)
         self.fp16 = hyperparameters['fp16']
         # Initiate the networks
-        self.gen_a = AdaINGen(hyperparameters['input_dim_a'], hyperparameters['gen'])  # auto-encoder for domain a
-        self.gen_b = AdaINGen(hyperparameters['input_dim_b'], hyperparameters['gen'])  # auto-encoder for domain b
+        self.gen_a = AdaINGen(hyperparameters['input_dim_a'], hyperparameters['gen'], hyperparameters['mask'])  # auto-encoder for domain a
+        self.gen_b = AdaINGen(hyperparameters['input_dim_b'], hyperparameters['gen'], hyperparameters['mask'])  # auto-encoder for domain b
         self.gen_b.enc_content = self.gen_a.enc_content  # content share weight
         #self.gen_b.enc_style = self.gen_a.enc_style
         self.dis_a = MsImageDis(hyperparameters['input_dim_a'], hyperparameters['dis'])  # discriminator for domain a
@@ -51,7 +51,11 @@ class ERGAN_Trainer(nn.Module):
         beta2 = hyperparameters['beta2']
         dis_params = list(self.dis_a.parameters()) + list(self.dis_b.parameters())
         gen_params = list(self.gen_a.parameters()) + list(self.gen_b.parameters())
-
+        mask_borders = hyperparameters['mask']
+        mask_border_up = mask_borders['mask_size_y1']
+        mask_border_bottom = mask_borders['mask_size_y2']
+        mask_border_left = mask_borders['mask_size_x1']
+        mask_border_right = mask_borders['mask_size_x2']
         self.dis_opt = torch.optim.Adam([p for p in dis_params if p.requires_grad],
                                         lr=lr_D, betas=(beta1, beta2), weight_decay=hyperparameters['weight_decay'])
         self.gen_opt = torch.optim.Adam([p for p in gen_params if p.requires_grad],
@@ -101,8 +105,8 @@ class ERGAN_Trainer(nn.Module):
         #mask = torch.ones(x_a.shape).cuda()
         block_a = x_a.clone()
         block_b = x_b.clone()
-        block_a[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
-        block_b[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
+        block_a[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)] = 0
+        block_b[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)] = 0
 
         # encode
         c_a, s_a_prime = self.gen_a.encode(x_a)
@@ -121,8 +125,8 @@ class ERGAN_Trainer(nn.Module):
 
         block_ba_real = x_ba_real.clone()
         block_ab_real = x_ab_real.clone()
-        block_ba_real[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
-        block_ab_real[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)] = 0
+        block_ba_real[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)] = 0
+        block_ab_real[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)] = 0
         # encode again
         # c_b_recon, s_a_recon = self.gen_a.encode(x_ba_randn)
         # c_a_recon, s_b_recon = self.gen_b.encode(x_ab_randn)
@@ -137,11 +141,11 @@ class ERGAN_Trainer(nn.Module):
         self.loss_gen_recon_res_a = self.recon_criterion(block_ab_real, block_a)
         self.loss_gen_recon_res_b = self.recon_criterion(block_ba_real, block_b)
         self.loss_gen_recon_x_a_re = self.recon_criterion(
-            x_a_recon[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)],
-             x_a[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)]) 
+            x_a_recon[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)],
+             x_a[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)]) 
         self.loss_gen_recon_x_b_re = self.recon_criterion(
-             x_b_recon[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)],
-             x_b[:,:, round(self.a * 144):round(self.a * 210), round(self.a *48):round(self.a * 172)]) # both celebA and MeGlass: [92:144, 48:172]
+             x_b_recon[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)],
+             x_b[:,:, round(self.a * mask_border_up):round(self.a * mask_border_bottom), round(self.a *mask_border_left):round(self.a * mask_border_right)]) # both celebA and MeGlass: [92:144, 48:172]
         self.loss_gen_recon_x_a = self.recon_criterion(x_a_recon, x_a)
         self.loss_gen_recon_x_b = self.recon_criterion(x_b_recon, x_b)
 
