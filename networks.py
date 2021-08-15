@@ -160,7 +160,7 @@ class AdaINGen(nn.Module):
               style_fake = self.enc_style(images)
         #style_fake = self.enc_style(images)
         #[:,:, round(self.a * 92):round(self.a * 144), round(self.a * 48):round(self.a * 172)] #celebA
-        images_block[:,:, round(self.a * 92):round(self.a * 144), round(self.a * 48):round(self.a * 172)] = 0 #fine_tune
+        images_block[:,:, round(self.a * 144):round(self.a * 210), round(self.a * 48):round(self.a * 172)] = 0 #fine_tune
 
         content = self.enc_content(images_block)
 
@@ -171,7 +171,7 @@ class AdaINGen(nn.Module):
         adain_params = self.mlp(style)
         self.assign_adain_params(adain_params, self.dec)
         images_block = images.clone()
-        images_block[:,:, round(self.a * 92):round(self.a * 144), round(self.a * 48):round(self.a * 172)] = 0
+        images_block[:,:, round(self.a * 144):round(self.a * 210), round(self.a * 48):round(self.a * 172)] = 0
 
         images = self.dec(content , images_block)
 
