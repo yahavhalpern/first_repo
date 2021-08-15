@@ -51,7 +51,7 @@ class ERGAN_Trainer(nn.Module):
         beta2 = hyperparameters['beta2']
         dis_params = list(self.dis_a.parameters()) + list(self.dis_b.parameters())
         gen_params = list(self.gen_a.parameters()) + list(self.gen_b.parameters())
-        self.mask_borders = hyperparameters['mask']
+        mask_borders = hyperparameters['mask']
         self.mask_border_up = mask_borders['mask_size_y1']
         self.mask_border_bottom = mask_borders['mask_size_y2']
         self.mask_border_left = mask_borders['mask_size_x1']
