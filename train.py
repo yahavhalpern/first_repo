@@ -23,6 +23,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, default='configs/celebA_folder.yaml', help='Path to the config file.')
 parser.add_argument('--output_path', type=str, default='.', help="outputs path")
 parser.add_argument("--resume", action="store_true")
+parser.add_argument("--save2drive", action="store_true")
+parser.add_argument("--drive_path", type=str, default='.', help='Path to the dump models in drive.')
 parser.add_argument('--trainer', type=str, default='ERGAN', help="ERGAN|UNIT")
 opts = parser.parse_args()
 
@@ -102,7 +104,8 @@ while True:
         # Save network weights
         if (iterations + 1) % config['snapshot_save_iter'] == 0:
             trainer.save(checkpoint_directory, iterations)
-
+            if opts.save2drive:
+                trainer.save(opts.drive_path,iterations)
         iterations += 1
         if iterations >= max_iter:
             sys.exit('Finish training')
