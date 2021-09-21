@@ -2,9 +2,9 @@
 # Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 #lr: 0.0001 lambda=0.01
 # logger options
-image_save_iter: 1000         # How often do you want to save output images during training
-image_display_iter: 500      # How often do you want to display output images during training
-display_size: 6              # How many images do you want to display each time
+image_save_iter: 200         # How often do you want to save output images during training
+image_display_iter: 200      # How often do you want to display output images during training
+display_size: 5              # How many images do you want to display each time
 snapshot_save_iter: 200      # How often do you want to save trained models
 log_iter: 100                   # How often do you want to log the training stats
 
@@ -36,7 +36,7 @@ gen:
   mlp_dim: 256                # number of filters in MLP
   style_dim: 256              # length of style code
   activ: lrelu                # activation function [relu/lrelu/prelu/selu/tanh]
-  n_downsample: 2             # number of downsampling layers in content encoder
+  n_downsample: 3             # number of downsampling layers in content encoder
   n_res: 4                    # number of residual blocks in content encoder/decoder
   pad_type: reflect           # padding type [zero/reflect]
   new_size: 224               # first resize the shortest image side to this size
@@ -53,8 +53,8 @@ dis:
   lambda: 0.01                # 1/0.01/ default=0
 
 mask:
-  mask_size_y1: 112                           # mask box size upper bound
-  mask_size_y2: 220                           # mask box size lower bound
+  mask_size_y1: 125                           # mask box size upper bound
+  mask_size_y2: 212                           # mask box size lower bound
   mask_size_x1: 37                            # mask box size left bound
   mask_size_x2: 187                           # mask box size right bound
   
