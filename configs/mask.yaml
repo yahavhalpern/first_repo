@@ -18,7 +18,7 @@ init: kaiming                 # initialization [gaussian/kaiming/xavier/orthogon
 lr_G: 0.0001                  # initial G learning rate
 lr_D: 0.0001                  # initial D learning rate
 lr_policy: step               # learning rate scheduler
-step_size: 1000             # how often to decay learning rate
+step_size: 10000             # how often to decay learning rate
 step_size_cyc: 10000
 gamma: 0.5                    # how much to decay learning rate
 gan_w: 1                      # weight of adversarial loss
